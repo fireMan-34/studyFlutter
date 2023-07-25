@@ -136,17 +136,25 @@ class _MyFirstHomePage1State extends State<MyFirstHomePage1> {
       throw UnimplementedError('没有可匹配得页面实例索引 $selectedIndex');
     }
 
-    return Scaffold(
+  /**
+   * 每当约束发生更改时，系统都会调用 LayoutBuilder 的 builder 回调。比如说，以下场景就会触发这种情况：
+  用户调整应用窗口的大小
+  用户将手机从人像模式旋转到横屏模式，或从横屏模式旋转到人像模式
+  MyHomePage 旁边的一些 widget 变大，使 MyHomePage 的约束变小
+  其他还有很多，不再一一列举
+   */
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
       body: Row(
         // 多个 Widget
         children: [
           // 避免刘海屏或者其它情况
           SafeArea(
               child:
-                  // 侧边导航
-                  NavigationRail(
+            // 侧边导航
+             NavigationRail(
             // 导航打开状态
-            extended: false,
+            extended: constraints.maxWidth >= 600,
             destinations: const [
               NavigationRailDestination(
                 icon: Icon(Icons.home),
@@ -172,6 +180,7 @@ class _MyFirstHomePage1State extends State<MyFirstHomePage1> {
         ],
       ),
     );
+    })
   }
 }
 
