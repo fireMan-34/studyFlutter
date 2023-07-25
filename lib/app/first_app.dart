@@ -34,6 +34,11 @@ class MyFirstApp extends StatelessWidget {
 class MyFirstAppState extends ChangeNotifier {
   var current = WordPair.random();
   var favorites = <WordPair>[];
+  var selectedIndexInAnotherWidget = 0;
+  var indexInYetAnotherWidget = 42;
+  var optionASelected = false;
+  var optionBSelected = false;
+  var loadingFromNetwork = false;
 
   void getNext() {
     // 变更值
@@ -53,6 +58,7 @@ class MyFirstAppState extends ChangeNotifier {
   }
 }
 
+// StatelessWidget 无状态 ui
 class MyFirstHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -105,10 +111,31 @@ class MyFirstHomePage extends StatelessWidget {
   }
 }
 
-// 多级路由页面
-class MyFirstHomePage1 extends StatelessWidget {
+// 多级路由页面 StatefulWidget 获取状态
+class MyFirstHomePage1 extends StatefulWidget {
+  @override
+  State<MyFirstHomePage1> createState() => _MyFirstHomePage1State();
+}
+
+class _MyFirstHomePage1State extends State<MyFirstHomePage1> {
+  var selectedIndex = 0;
+  
   @override
   Widget build(BuildContext context) {
+
+    Widget page;
+
+    switch (selectedIndex) {
+      case 0:
+      page = GenerateorPage();
+      break;
+      case 1:
+      page = GenerateorPage1();
+      break;
+      default:
+      throw UnimplementedError('没有可匹配得页面实例索引 $selectedIndex');
+    }
+
     return Scaffold(
       body: Row(
         // 多个 Widget
@@ -128,13 +155,19 @@ class MyFirstHomePage1 extends StatelessWidget {
               NavigationRailDestination(
                   icon: Icon(Icons.favorite), label: Text('收藏')),
             ],
-            selectedIndex: 0,
-            onDestinationSelected: (value) => {print('选中的值 $value')},
+            selectedIndex: selectedIndex,
+            // 点击选中的 tab 值
+            onDestinationSelected: (value) {
+              print('选中的值 $value');
+              setState(() {
+                selectedIndex = value;
+              });
+              },
           )),
           Expanded(
               child: Container(
             color: Theme.of(context).colorScheme.primaryContainer,
-            child: GenerateorPage(),
+            child: page,
           ))
         ],
       ),
