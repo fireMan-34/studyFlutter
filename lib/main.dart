@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/utils/index.dart';
+// import './utils/index.dart';
 
+// 主入口
 void main() {
   runApp(const MyApp());
 }
 
+// 应用级别实例
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -11,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'My Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -28,16 +32,20 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
         useMaterial3: true,
       ),
+      // root 路由 const 编译级别常量
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
+// 页面级别实例
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
+
+  
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -47,17 +55,19 @@ class MyHomePage extends StatefulWidget {
   // case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
-
+  // final 运行时常量
   final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+// 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
+    simplelog('输出之前 counter: $_counter');
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -70,6 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    SimplePersion sp =  SimplePersion('马旭烽', 24);
+    sp..print()..say();
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -112,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            Text('测试代码是否热更新'),
           ],
         ),
       ),
