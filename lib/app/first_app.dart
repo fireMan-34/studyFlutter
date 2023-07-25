@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:provider/provider.dart';
 
-void runFirstApp () {
+void runFirstApp() {
   runApp(const MyFirstApp());
 }
 
 // 在构建每一个 Flutter 应用时，widget 都是一个基本要素 .
 // 应用实例
-class MyFirstApp  extends StatelessWidget {
+class MyFirstApp extends StatelessWidget {
   const MyFirstApp({super.key});
 
   // 每一个 widget 都会有一个 build 。每当 context 环境变换时，Flutter 会自动调用该对象。
   @override
-  Widget build(BuildContext  context) {
+  Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       // 建立通知实例
       create: (context) => MyFirstAppState(),
@@ -21,11 +21,11 @@ class MyFirstApp  extends StatelessWidget {
         title: '我的第一个 Flutter 应用',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
         ),
-        home:MyFirstHomePage(),
-        ),
-      );
+        home: MyFirstHomePage(),
+      ),
+    );
   }
 }
 
@@ -42,30 +42,67 @@ class MyFirstAppState extends ChangeNotifier {
   }
 }
 
-
 class MyFirstHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 订阅应用实例
     var appState = context.watch<MyFirstAppState>();
+    // 与具体状态分离，泛化
+    var pair = appState.current;
 
     // 每个 build 方法都必须返回一个 widget 或（更常见的）嵌套 widget 树
     return Scaffold(
       body: Center(
-        // Column 是 Flutter 中最基础的布局 widget 之一。它接受任意数量的子项并将这些子项从上到下放在一列中
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+          // Column 是 Flutter 中最基础的布局 widget 之一。它接受任意数量的子项并将这些子项从上到下放在一列中
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         const Text('一个随机的想法:'),
-        Text(appState.current.asLowerCase),
-        ElevatedButton(onPressed: () {
-          appState.getNext();
-        }, child: const Text('下一个')),
-
-        ElevatedButton(onPressed: (){
-            print('上一个按钮');
-        }, child: const Text('上一个'))
+        BigCard(pair: pair),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  appState.getNext();
+                },
+                child: const Text('下一个')),
+            ElevatedButton(
+                onPressed: () {
+                  print('上一个按钮');
+                },
+                child: const Text('上一个'))
+          ],
+        )
       ])),
+    );
+  }
+}
+
+class BigCard extends StatelessWidget {
+  const BigCard({
+    super.key,
+    required this.pair,
+  });
+
+  final WordPair pair;
+
+  //优化无障碍功能
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final style = theme.textTheme.displayMedium!.copyWith(
+      color: theme.colorScheme.onPrimary,
+    );
+    return Card(
+      color: theme.colorScheme.primary,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Text(
+          pair.asLowerCase,
+          style: style,
+          semanticsLabel:
+              '${pair.first} ${pair.second}', // Flutter 提供了多种无障碍工具，包括自动化测试和 Semantics widget
+        ),
+      ),
     );
   }
 }
