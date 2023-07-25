@@ -1,3 +1,4 @@
+# Dark 文件静态编译配置，会启动一些特性
 # This file configures the analyzer, which statically analyzes Dart code to
 # check for errors, warnings, and lints.
 #
