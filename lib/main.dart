@@ -4,5 +4,13 @@ import 'package:my_app/app/index.dart';
 
 // 主入口
 void main() {
-  runDefaultApp();
+  int runClassInt = 1;
+  switch (runClassInt) {
+    case 1:
+      runFirstApp();
+    case 0:
+    default:
+      runDefaultApp();
+    break;
+  }
 }
