@@ -47,11 +47,14 @@ class MyFirstAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleFavorites() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
+  void toggleFavorites([ WordPair? curParam ]) {
+
+    WordPair curVal = curParam ?? current;
+
+    if (favorites.contains(curVal)) {
+      favorites.remove(curVal);
     } else {
-      favorites.add(current);
+      favorites.add(curVal);
     }
 
     notifyListeners();
@@ -119,24 +122,23 @@ class MyFirstHomePage1 extends StatefulWidget {
 
 class _MyFirstHomePage1State extends State<MyFirstHomePage1> {
   var selectedIndex = 0;
-  
+
   @override
   Widget build(BuildContext context) {
-
     Widget page;
 
     switch (selectedIndex) {
       case 0:
-      page = GenerateorPage();
-      break;
+        page = GenerateorPage();
+        break;
       case 1:
-      page = GenerateorPage1();
-      break;
+        page = GenerateorPage1();
+        break;
       default:
-      throw UnimplementedError('没有可匹配得页面实例索引 $selectedIndex');
+        throw UnimplementedError('没有可匹配得页面实例索引 $selectedIndex');
     }
 
-  /**
+    /**
    * 每当约束发生更改时，系统都会调用 LayoutBuilder 的 builder 回调。比如说，以下场景就会触发这种情况：
   用户调整应用窗口的大小
   用户将手机从人像模式旋转到横屏模式，或从横屏模式旋转到人像模式
@@ -145,42 +147,42 @@ class _MyFirstHomePage1State extends State<MyFirstHomePage1> {
    */
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
-      body: Row(
-        // 多个 Widget
-        children: [
-          // 避免刘海屏或者其它情况
-          SafeArea(
-              child:
-            // 侧边导航
-             NavigationRail(
-            // 导航打开状态
-            extended: constraints.maxWidth >= 600,
-            destinations: const [
-              NavigationRailDestination(
-                icon: Icon(Icons.home),
-                label: Text('主页'),
-              ),
-              NavigationRailDestination(
-                  icon: Icon(Icons.favorite), label: Text('收藏')),
-            ],
-            selectedIndex: selectedIndex,
-            // 点击选中的 tab 值
-            onDestinationSelected: (value) {
-              print('选中的值 $value');
-              setState(() {
-                selectedIndex = value;
-              });
+        body: Row(
+          // 多个 Widget
+          children: [
+            // 避免刘海屏或者其它情况
+            SafeArea(
+                child:
+                    // 侧边导航
+                    NavigationRail(
+              // 导航打开状态
+              extended: constraints.maxWidth >= 600,
+              destinations: const [
+                NavigationRailDestination(
+                  icon: Icon(Icons.home),
+                  label: Text('主页'),
+                ),
+                NavigationRailDestination(
+                    icon: Icon(Icons.favorite), label: Text('收藏')),
+              ],
+              selectedIndex: selectedIndex,
+              // 点击选中的 tab 值
+              onDestinationSelected: (value) {
+                print('选中的值 $value');
+                setState(() {
+                  selectedIndex = value;
+                });
               },
-          )),
-          Expanded(
-              child: Container(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            child: page,
-          ))
-        ],
-      ),
-    );
-    })
+            )),
+            Expanded(
+                child: Container(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              child: page,
+            ))
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -231,9 +233,46 @@ class GenerateorPage extends StatelessWidget {
 class GenerateorPage1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyFirstAppState>();
+    var favorites = appState.favorites;
+
+    print('输入信息');
+
+    if (favorites.isEmpty) {
+      return const Center(
+        child: Text('当前无收藏'),
+      );
+    }
+
     return Scaffold(
+      backgroundColor: Colors.yellow,
       body: SafeArea(
-        child: const Text('收藏区域'),
+        child: Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              '收藏区域',
+              style: TextStyle(
+                color: Colors.white,
+                backgroundColor: Colors.black,
+                height: 3,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            // for (var msg in favorites) Text(msg.asLowerCase),
+            ...(favorites
+                .map((item) => ListTile(
+                      title: Text(item.asLowerCase),
+                      leading: ElevatedButton(child: const Icon(Icons.favorite), onPressed: () {
+                        appState.toggleFavorites(item);
+                      },),
+                    ))
+                .toList()),
+          ],
+        )),
       ),
     );
   }
