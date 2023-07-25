@@ -23,7 +23,7 @@ class MyFirstApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
         ),
-        home: MyFirstHomePage(),
+        home: MyFirstHomePage1(),
       ),
     );
   }
@@ -101,6 +101,98 @@ class MyFirstHomePage extends StatelessWidget {
           ],
         )
       ])),
+    );
+  }
+}
+
+// 多级路由页面
+class MyFirstHomePage1 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Row(
+        // 多个 Widget
+        children: [
+          // 避免刘海屏或者其它情况
+          SafeArea(
+              child:
+                  // 侧边导航
+                  NavigationRail(
+            // 导航打开状态
+            extended: false,
+            destinations: const [
+              NavigationRailDestination(
+                icon: Icon(Icons.home),
+                label: Text('主页'),
+              ),
+              NavigationRailDestination(
+                  icon: Icon(Icons.favorite), label: Text('收藏')),
+            ],
+            selectedIndex: 0,
+            onDestinationSelected: (value) => {print('选中的值 $value')},
+          )),
+          Expanded(
+              child: Container(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            child: GenerateorPage(),
+          ))
+        ],
+      ),
+    );
+  }
+}
+
+class GenerateorPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyFirstAppState>();
+    var pair = appState.current;
+
+    IconData icon;
+
+    if (appState.favorites.contains(pair)) {
+      icon = Icons.favorite;
+    } else {
+      icon = Icons.favorite_border;
+    }
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          BigCard(pair: pair),
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton.icon(
+                  onPressed: () {
+                    appState.toggleFavorites();
+                  },
+                  icon: Icon(icon),
+                  label: const Text('收藏')),
+              ElevatedButton(
+                  onPressed: () {
+                    appState.getNext();
+                  },
+                  child: const Text('新的'))
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class GenerateorPage1 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: const Text('收藏区域'),
+      ),
     );
   }
 }
