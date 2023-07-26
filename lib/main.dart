@@ -5,12 +5,16 @@ enum AppClass {
   zero,
   first,
   second,
+  thrid,
 }
 
 // 主入口
 void main() {
-  AppClass runClassInt = AppClass.second;
+  AppClass runClassInt = AppClass.thrid;
   switch (runClassInt) {
+    case AppClass.thrid:
+      runThirdApp();
+      break;
     case AppClass.second:
       runSecondApp();
       break;
