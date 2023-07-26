@@ -30,11 +30,7 @@ class ThirdApp extends StatelessWidget {
             ),
           ],
         )),
-        const Icon(
-          Icons.star,
-          color: Colors.red,
-        ),
-        const Text('1'),
+        FavoriteWidget(),
       ]),
     );
 
@@ -99,6 +95,54 @@ class ThirdApp extends StatelessWidget {
             ]),
           ),
         ));
+  }
+}
+
+class FavoriteWidget extends StatefulWidget {
+  const FavoriteWidget({
+    super.key,
+  });
+
+  @override
+  State<FavoriteWidget> createState() => _FavoriteWidgetState();
+}
+
+class _FavoriteWidgetState extends State<FavoriteWidget> {
+  bool isFavorite = false;
+  int favoriteCount = 34;
+
+  void toggleFavorite() {
+    setState(() {
+      if (isFavorite) {
+        favoriteCount -= 1;
+      } else {
+        favoriteCount += 1;
+      }
+
+      isFavorite = !isFavorite;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      Container(
+        padding: const EdgeInsets.all(0),
+        child: IconButton(
+          icon:
+              isFavorite ? const Icon(Icons.star) : const Icon(Icons.star_border),
+          color: Colors.red[500],
+          alignment: Alignment.centerRight,
+          onPressed: toggleFavorite,
+        ),
+      ),
+      SizedBox(
+        width: 18,
+        child: SizedBox(
+          child: Text('$favoriteCount'),
+        ),
+      )
+    ]);
   }
 }
 
